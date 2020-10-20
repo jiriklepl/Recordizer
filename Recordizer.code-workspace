@@ -5,6 +5,8 @@
 		}
 	],
 	"settings": {
+		"files.trimTrailingWhitespace": true,
+		"files.insertFinalNewline": true,
 		"files.associations": {
 			"array": "cpp",
 			"atomic": "cpp",
