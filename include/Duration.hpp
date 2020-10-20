@@ -42,8 +42,7 @@ inline std::ostream &Duration::print_bytes<0>(std::ostream &stream,
 inline std::ostream &operator<<(std::ostream &stream,
                                 const Duration &duration) {
   constexpr std::size_t bytes =
-      (sizeof(std::size_t) * 8 + (Duration::byte_size - 1)) /
-      Duration::byte_size;
+      (sizeof(std::size_t) * 8 + Duration::byte_size - 1) / Duration::byte_size;
   return duration.print_bytes<bytes - 1>(stream);
 }
 
