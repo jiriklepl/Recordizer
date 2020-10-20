@@ -12,7 +12,7 @@ public:
   std::size_t length() const noexcept { return _length; }
   void set_length(std::size_t length) noexcept { _length = length; }
 
-  friend std::ostream &operator<<(std::ostream &, const Duration &);
+  friend std::ostream &operator<<(std::ostream &, const Duration &) noexcept;
 
 private:
   static constexpr std::size_t byte_size = 7;
@@ -40,7 +40,7 @@ inline std::ostream &Duration::print_bytes<0>(std::ostream &stream,
 }
 
 inline std::ostream &operator<<(std::ostream &stream,
-                                const Duration &duration) {
+                                const Duration &duration) noexcept {
   constexpr std::size_t bytes =
       (sizeof(std::size_t) * 8 + Duration::byte_size - 1) / Duration::byte_size;
   return duration.print_bytes<bytes - 1>(stream);
