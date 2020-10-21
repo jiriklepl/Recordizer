@@ -5,14 +5,31 @@
 
 class Duration {
 public:
-  explicit Duration(std::size_t length) noexcept : _length{length} {}
+  explicit Duration(std::size_t length) : _length{length} {}
 
-  Duration() noexcept : _length{0} {}
+  Duration() : _length{0} {}
 
-  std::size_t length() const noexcept { return _length; }
-  void set_length(std::size_t length) noexcept { _length = length; }
+  std::size_t length() const { return _length; }
+  void set_length(std::size_t length) { _length = length; }
 
-  friend std::ostream &operator<<(std::ostream &, const Duration &) noexcept;
+  bool operator==(const Duration &other) const {
+    return length() == other.length();
+  }
+  bool operator!=(const Duration &other) const { return !(*this == other); }
+  bool operator<(const Duration &other) const {
+    return length() < other.length();
+  }
+  bool operator>(const Duration &other) const {
+    return length() > other.length();
+  }
+  Duration operator+(const Duration &other) const {
+    return Duration(length() + other.length());
+  }
+  Duration operator-(const Duration &other) const {
+    return Duration(length() - other.length());
+  }
+
+  friend std::ostream &operator<<(std::ostream &, const Duration &);
 
 private:
   static constexpr std::size_t byte_size = 7;
@@ -21,7 +38,7 @@ private:
 
   template <std::size_t where>
   std::ostream &print_bytes(std::ostream &stream,
-                            unsigned char byte_mess = 0) const noexcept {
+                            unsigned char byte_mess = 0) const {
     const unsigned char byte = (_length >> (where * byte_size)) & byte_mask;
     byte_mess |= byte;
 
@@ -34,13 +51,13 @@ private:
 
 template <>
 inline std::ostream &Duration::print_bytes<0>(std::ostream &stream,
-                                              unsigned char) const noexcept {
+                                              unsigned char) const {
   stream.put(_length & byte_mask);
   return stream;
 }
 
 inline std::ostream &operator<<(std::ostream &stream,
-                                const Duration &duration) noexcept {
+                                const Duration &duration) {
   constexpr std::size_t bytes =
       (sizeof(std::size_t) * 8 + Duration::byte_size - 1) / Duration::byte_size;
   return duration.print_bytes<bytes - 1>(stream);
