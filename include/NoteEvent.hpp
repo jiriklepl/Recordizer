@@ -7,7 +7,11 @@
 
 class NoteEvent {
 public:
-  enum EventType : unsigned char { OFF, ON };
+  enum class EventType : unsigned char {
+    OFF = 0U,
+    ON = 1U,
+    /*NOT SUPPORTED*/ POLY = 2U
+  };
 
   NoteEvent(Duration when, unsigned char note, unsigned char velocity,
             EventType type)
