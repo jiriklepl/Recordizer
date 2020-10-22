@@ -3,28 +3,13 @@
 # 'make clean'  removes all .o and executable files
 #
 
-# define the Cpp compiler to use
 CXX = g++
-
-# define any compile-time flags
-CXXFLAGS	:= -std=c++17 -Wall -Wextra -Wpedantic -g
-
-# define library paths in addition to /usr/lib
-#   if I wanted to include libraries not in /usr/lib I'd specify
-#   their path using -Lpath, something like:
+CXXFLAGS := -std=c++17 -Wall -Wextra -Wpedantic -g
 LFLAGS =
-
-# define output directory
-OUTPUT	:= output
-
-# define source directory
-SRC		:= src
-
-# define include directory
-INCLUDE	:= include
-
-# define lib directory
-LIB		:= lib
+OUTPUT   := output
+SRC      := src
+INCLUDE  := include
+LIB      := lib
 
 ifeq ($(OS),Windows_NT)
 MAIN	:= main.exe
@@ -53,7 +38,7 @@ LIBS		:= $(patsubst %,-L%, $(LIBDIRS:%/=%))
 # define the C source files
 SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS)))
 
-# define the C object files 
+# define the C object files
 OBJECTS		:= $(SOURCES:.cpp=.o)
 
 #
@@ -73,10 +58,6 @@ $(OUTPUT):
 $(MAIN): $(OBJECTS) 
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(OUTPUTMAIN) $(OBJECTS) $(LFLAGS) $(LIBS)
 
-# this is a suffix replacement rule for building .o's from .c's
-# it uses automatic variables $<: the name of the prerequisite of
-# the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
-# (see the gnu make manual section about automatic variables)
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<  -o $@
 
