@@ -1,7 +1,7 @@
 #ifndef DURATION_HPP_
 #define DURATION_HPP_
 
-#include <iostream>
+#include <ostream>
 
 class Duration {
 public:

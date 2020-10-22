@@ -2,6 +2,7 @@
 #define NOTE_EVENT_HPP_
 
 #include <cassert>
+#include <ostream>
 
 #include "Duration.hpp"
 
@@ -13,9 +14,10 @@ public:
     /*NOT SUPPORTED*/ POLY = 2U
   };
 
-  NoteEvent(Duration when, unsigned char note, unsigned char velocity,
-            EventType type)
-      : _when{when}, _note{note}, _velocity{velocity}, _type{type} {}
+  NoteEvent(Duration when, unsigned char channel, unsigned char note,
+            unsigned char velocity, EventType type)
+      : _when{when}, _channel{channel}, _note{note}, _velocity{velocity},
+        _type{type} {}
 
   bool operator==(const NoteEvent &other) const {
     if (when() == other.when() && note() == other.note()) {
@@ -59,6 +61,9 @@ public:
   Duration when() const { return _when; }
   void set_when(Duration when) { _when = when; }
 
+  unsigned char channel() const { return _channel; }
+  void set_channel(unsigned char channel) { _channel = channel; }
+
   unsigned char note() const { return _note; }
   void set_note(unsigned char note) { _note = note; }
 
@@ -68,8 +73,18 @@ public:
   EventType type() const { return _type; }
   void set_type(EventType type) { _type = type; }
 
+  friend std::ostream &operator<<(std::ostream &stream,
+                                  const NoteEvent &note_event) {
+    stream.put(((unsigned char)note_event.type() << 4) | note_event.channel());
+    stream.put(note_event.note());
+    stream.put(note_event.velocity());
+
+    return stream;
+  }
+
 private:
   Duration _when;
+  unsigned char _channel;
   unsigned char _note;
   unsigned char _velocity;
   EventType _type;

@@ -1,6 +1,7 @@
 #ifndef NOTE_SHEET_HPP_
 #define NOTE_SHEET_HPP_
 
+#include <ostream>
 #include <set>
 
 #include "Note.hpp"
@@ -8,22 +9,39 @@
 
 class NoteSheet {
 public:
-  bool add_note(Duration when, Note added) {
-    return _notes.emplace(added.on_event(when)).second &&
-           _notes.emplace(added.off_event(when)).second;
+  bool add_note(Duration when, const char channel, Note added) {
+    return _notes.emplace(added.on_event(when, channel)).second &&
+           _notes.emplace(added.off_event(when, channel)).second;
   }
 
-  bool remove_note(Duration when, Note removed) {
-    return _notes.erase(removed.on_event(when)) &&
-           _notes.erase(removed.off_event(when));
+  bool remove_note(Duration when, const char channel, Note removed) {
+    return _notes.erase(removed.on_event(when, channel)) &&
+           _notes.erase(removed.off_event(when, channel));
   }
 
-  bool shift_note(Duration old_when, Note shifted, Duration new_when) {
-    return remove_note(old_when, shifted) && add_note(new_when, shifted);
+  bool shift_note(Duration old_when, const char channel, Note shifted,
+                  Duration new_when) {
+    return remove_note(old_when, channel, shifted) &&
+           add_note(new_when, channel, shifted);
   }
 
-  bool change_note(Duration when, Note old_note, Note new_note) {
-    return remove_note(when, old_note) && add_note(when, new_note);
+  bool change_note(Duration when, const char channel, Note old_note,
+                   Note new_note) {
+    return remove_note(when, channel, old_note) &&
+           add_note(when, channel, new_note);
+  }
+
+  friend std::ostream &operator<<(std::ostream &stream,
+                                  const NoteSheet &note_sheet) {
+    Duration time;
+
+    for (auto &&note_event : note_sheet._notes) {
+      stream << (time - note_event.when());
+      stream << note_event;
+      time = note_event.when();
+    }
+
+    return stream;
   }
 
 private:
