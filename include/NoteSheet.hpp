@@ -7,6 +7,8 @@
 #include "Note.hpp"
 #include "NoteEvent.hpp"
 
+// TODO: append note with offset instead of absolute time
+
 class NoteSheet {
 public:
   bool add_note(Duration when, const char channel, Note added) {
@@ -31,12 +33,14 @@ public:
            add_note(when, channel, new_note);
   }
 
+  void clear() { _notes.clear(); }
+
   friend std::ostream &operator<<(std::ostream &stream,
                                   const NoteSheet &note_sheet) {
     Duration time;
 
     for (auto &&note_event : note_sheet._notes) {
-      stream << (time - note_event.when());
+      stream << (note_event.when() - time);
       stream << note_event;
       time = note_event.when();
     }
