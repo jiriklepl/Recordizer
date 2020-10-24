@@ -4,18 +4,35 @@
 #include "Transformator.hpp"
 
 int main(int argc, char *argv[]) {
-  std::ofstream soubor("soubor.txt");
+  std::ofstream soubor{"soubor.mid", std::ios::binary};
   Transformator trans{};
-  trans.add_note(Duration{100}, 0, Note{Duration{100},60,50});
-  trans.add_note(Duration{200}, 0, Note{Duration{100},64,50});
-  trans.add_note(Duration{300}, 0, Note{Duration{100},67,50});
-  trans.add_note(Duration{400}, 0, Note{Duration{50},67,50});
-  trans.add_note(Duration{500}, 0, Note{Duration{50},67,50});
-  trans.add_note(Duration{600}, 0, Note{Duration{100},60,50});
-  trans.add_note(Duration{700}, 0, Note{Duration{100},64,50});
-  trans.add_note(Duration{800}, 0, Note{Duration{100},62,50});
-  trans.add_note(Duration{900}, 0, Note{Duration{50},62,50});
-  trans.add_note(Duration{1000}, 0, Note{Duration{50},62,50});
+  Duration time{};
+  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{200},67,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},67,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},67,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{200},62,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},62,50}); time = time + Duration{100};
+  trans.add_note(time, 0, Note{Duration{100},62,50}); time = time + Duration{100};
+
+  soubor << "MThd";
+  soubor.put(0);
+  soubor.put(0);
+  soubor.put(0);
+  soubor.put(6);
+  soubor.put(0);
+  soubor.put(1);
+  soubor.put(0);
+  soubor.put(1);
+  soubor.put(0);
+  soubor.put(200);
   soubor << trans;
-  std::cout << "All sheet written to!" << std::endl;
+  std::cout << "File written!" << std::endl;
 }
