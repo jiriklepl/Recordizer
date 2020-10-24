@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <set>
+#include <sstream>
 
 #include "Note.hpp"
 #include "NoteEvent.hpp"
@@ -35,12 +36,35 @@ public:
 
   void clear() { _notes.clear(); }
 
+  std::size_t size() { return _notes.size(); }
+
   friend std::ostream &operator<<(std::ostream &stream,
                                   const NoteSheet &note_sheet) {
-    Duration time;
+    std::uint32_t length{0};
+    Duration time{0};
+    std::stringstream buff{};
+
+    stream << "MTrk";
 
     for (auto &&note_event : note_sheet._notes) {
-      stream << (note_event.when() - time);
+      buff << note_event.when() - time;
+      length += buff.str().length() + 3;
+      time = note_event.when();
+      buff.str({});
+      buff.clear();
+    }
+
+    time = Duration{0};
+
+    for(
+      unsigned char *c = reinterpret_cast<unsigned char*>(&length + 1);
+      c-- > reinterpret_cast<unsigned char*>(&length);
+    ) {
+      stream.put(*c);
+    }
+
+    for (auto &&note_event : note_sheet._notes) {
+      stream << note_event.when() - time;
       stream << note_event;
       time = note_event.when();
     }
