@@ -56,6 +56,7 @@ public:
 
     time = Duration{0};
 
+    // TODO: valid only for LE
     for(
       unsigned char *c = reinterpret_cast<unsigned char*>(&length + 1);
       c-- > reinterpret_cast<unsigned char*>(&length);
