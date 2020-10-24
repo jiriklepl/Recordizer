@@ -22,11 +22,23 @@ public:
   bool operator>(const Duration &other) const {
     return length() > other.length();
   }
+  bool operator<=(const Duration &other) const {
+    return length() <= other.length();
+  }
+  bool operator>=(const Duration &other) const {
+    return length() >= other.length();
+  }
   Duration operator+(const Duration &other) const {
     return Duration(length() + other.length());
   }
   Duration operator-(const Duration &other) const {
     return Duration(length() - other.length());
+  }
+  Duration operator*(std::size_t times) const {
+    return Duration(length() * times);
+  }
+  Duration operator/(std::size_t parts) const {
+    return Duration(length() / parts);
   }
 
   friend std::ostream &operator<<(std::ostream &, const Duration &);
