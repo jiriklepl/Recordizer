@@ -6,6 +6,8 @@
 
 #include "Duration.hpp"
 
+// TODO: move to cpp because of macros, or come up with something better
+
 class NoteEvent {
 public:
   enum class EventType : unsigned char {
@@ -20,10 +22,9 @@ public:
         _type{type} {}
 
   bool operator==(const NoteEvent &other) const {
-    if (when() == other.when() && note() == other.note()) {
+    if (when() == other.when() && note() == other.note() &&
+        type() == other.type()) {
       assert(velocity() == other.velocity());
-      assert(type() == other.type());
-
       return true;
     } else {
       return false;
@@ -32,30 +33,31 @@ public:
 
   bool operator!=(const NoteEvent &other) const { return !(*this == other); }
 
-  bool operator<(const NoteEvent &other) const {
-    if (when() < other.when())
-      return true;
-    else if (note() < other.note())
-      return true;
-    else {
-      assert(velocity() == other.velocity());
-      assert(type() == other.type());
+#define do_comparison(condition) do { \
+  switch (condition) {                \
+    case -1:                          \
+      return false;                   \
+    case 0: break;                    \
+    case 1:                           \
+      return true;                    \
+  }} while (0)
 
-      return false;
-    }
+  bool operator<(const NoteEvent &other) const {
+    do_comparison((when() < other.when()) - (when() > other.when()));
+    do_comparison((note() < other.note()) - (note() > other.note()));
+    do_comparison((type() < other.type()) - (type() > other.type()));
+
+    assert(velocity() == other.velocity());
+    return false;
   }
 
   bool operator>(const NoteEvent &other) const {
-    if (when() > other.when())
-      return true;
-    else if (note() > other.note())
-      return true;
-    else {
-      assert(velocity() == other.velocity());
-      assert(type() == other.type());
+    do_comparison((when() > other.when()) - (when() < other.when()));
+    do_comparison((note() > other.note()) - (note() < other.note()));
+    do_comparison((type() > other.type()) - (type() < other.type()));
 
-      return false;
-    }
+    assert(velocity() == other.velocity());
+    return false;
   }
 
   Duration when() const { return _when; }
@@ -75,7 +77,7 @@ public:
 
   friend std::ostream &operator<<(std::ostream &stream,
                                   const NoteEvent &note_event) {
-    stream.put(((unsigned char)note_event.type() << 4) | note_event.channel());
+    stream.put(128 | ((unsigned char)note_event.type() << 4) | note_event.channel());
     stream.put(note_event.note());
     stream.put(note_event.velocity());
 
