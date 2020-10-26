@@ -2,25 +2,26 @@
 #include <iostream>
 
 #include "Transformator.hpp"
+#include "NoteConstants.hpp"
 
 int main(int argc, char *argv[]) {
   std::ofstream soubor{"soubor.mid", std::ios::binary};
   Transformator trans{};
-  Duration time{};
-  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{200},67,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},67,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},67,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},60,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},64,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{200},62,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},62,50}); time = time + Duration{100};
-  trans.add_note(time, 0, Note{Duration{100},62,50}); time = time + Duration{100};
+
+  trans.append_note(0, 0, {100, C + 4, 100});
+  trans.append_note(0, 0, {100, E + 4, 100});
+  trans.append_note(0, 0, {100, C + 4, 100});
+  trans.append_note(0, 0, {100, E + 4, 100});
+  trans.append_note(0, 0, {200, G + 4, 100});
+  trans.append_note(0, 0, {100, G + 4, 100});
+  trans.append_note(0, 0, {100, G + 4, 100});
+  trans.append_note(0, 0, {100, C + 4, 100});
+  trans.append_note(0, 0, {100, E + 4, 100});
+  trans.append_note(0, 0, {100, C + 4, 100});
+  trans.append_note(0, 0, {100, E + 4, 100});
+  trans.append_note(0, 0, {200, D + 4, 100});
+  trans.append_note(0, 0, {100, D + 4, 100});
+  trans.append_note(0, 0, {100, D + 4, 100});
 
   soubor << "MThd";
   soubor.put(0);
