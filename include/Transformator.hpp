@@ -99,6 +99,10 @@ public:
     }
   }
 
+  void append_note(Duration after, unsigned char channel, Note added) {
+    return add_note(note_sheet.end_time() + after, channel, added);
+  }
+
   void clear() {
     note_sheet.clear();
     set_current_error(0);
