@@ -5,7 +5,7 @@
 
 class Duration {
 public:
-  explicit Duration(std::size_t length) : _length{length} {}
+  Duration(std::size_t length) : _length{length} {}
 
   Duration() : _length{0} {}
 
