@@ -5,6 +5,7 @@
 #include <ostream>
 #include <random>
 
+#include "NoteConstants.hpp"
 #include "NoteSheet.hpp"
 
 // TODO: fix clear() so it resets generator
@@ -12,9 +13,9 @@
 class Transformator {
 public:
   Transformator()
-      : _max_splits{5}, _min_split{0}, _base_note{60}, _current_error{0},
+      : _max_splits{5}, _min_split{0}, _base_note{E + 4}, _current_error{0},
         _max_sq_error{4}, _error_chance{0x2P-3}, _error_multiplier{0x1P-6},
-        _split_chance{0x2P-6}, _preference_multiplier{.0} {}
+        _split_chance{0}, _preference_multiplier{0x1P-6} {}
 
   std::size_t max_splits() const { return _max_splits; }
   void set_max_splits(std::size_t max_splits) { _max_splits = max_splits; }
@@ -99,7 +100,7 @@ public:
   }
 
   template <std::derived_from<Event> EventType, class... Args>
-  bool add_event(Duration when, unsigned char channel, Args... args) {
+  bool add_event(Duration when, unsigned char channel, Args&&... args) {
     return note_sheet.add_event<EventType>(when, channel,
                                            std::forward<Args>(args)...);
   }
@@ -109,7 +110,7 @@ public:
   }
 
   template <std::derived_from<Event> EventType, class... Args>
-  bool append_event(Duration when, unsigned char channel, Args... args) {
+  bool append_event(Duration when, unsigned char channel, Args&&... args) {
     return note_sheet.append_event<EventType>(when, channel,
                                               std::forward<Args>(args)...);
   }

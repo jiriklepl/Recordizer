@@ -27,7 +27,7 @@ public:
   }
 
   template <std::derived_from<Event> EventType, class... Args>
-  bool add_event(Duration when, unsigned char channel, Args... args) {
+  bool add_event(Duration when, unsigned char channel, Args&&... args) {
     return _events.emplace(std::make_unique<EventType>(when, channel, std::forward<Args>(args)...)).second;
   }
 
@@ -53,7 +53,7 @@ public:
   }
 
   template <std::derived_from<Event> EventType, class... Args>
-  bool append_event(Duration after, unsigned char channel, Args... args) {
+  bool append_event(Duration after, unsigned char channel, Args&&... args) {
     auto added = std::make_unique<EventType>(end_time() + after, channel, std::forward<Args>(args)...);
     added->set_when(added->when() + end_time());
     return _events.emplace(std::move(added)).second;
