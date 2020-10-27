@@ -4,7 +4,7 @@
 #
 
 CXX = g++
-CXXFLAGS := -std=c++20 -Wall -Wextra -Wpedantic -g
+CXXFLAGS := -std=c++20 -Og -Wall -Wextra -Wpedantic -g
 LFLAGS =
 OUTPUT   := output
 SRC      := src
