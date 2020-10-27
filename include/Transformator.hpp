@@ -14,8 +14,8 @@ class Transformator {
 public:
   Transformator()
       : _max_splits{5}, _min_split{0}, _base_note{60}, _current_error{0},
-        _max_sq_error{4}, _error_chance{0x1P-5}, _error_multiplier{.0},
-        _split_chance{0x1P-6}, _preference_multiplier{.0} {}
+        _max_sq_error{4}, _error_chance{0x2P-3}, _error_multiplier{0x1P-6},
+        _split_chance{0x2P-6}, _preference_multiplier{.0} {}
 
   std::size_t max_splits() const { return _max_splits; }
   void set_max_splits(std::size_t max_splits) { _max_splits = max_splits; }
@@ -99,8 +99,18 @@ public:
     }
   }
 
+  template <std::derived_from<Event> EventType, class... Args>
+  bool add_event(Duration when, unsigned char channel, Args... args) {
+    return note_sheet.add_event<EventType>(when, channel, std::forward<Args>(args)...);
+  }
+
   void append_note(Duration after, unsigned char channel, Note added) {
     return add_note(note_sheet.end_time() + after, channel, added);
+  }
+
+  template <std::derived_from<Event> EventType, class... Args>
+  bool append_event(Duration when, unsigned char channel, Args... args) {
+    return note_sheet.append_event<EventType>(when, channel, std::forward<Args>(args)...);
   }
 
   void clear() {
@@ -125,7 +135,7 @@ private:
 
   double random() { return distribution()(generator()); }
 
-  generator_type _generator;
+  generator_type _generator{80};
   distribution_type _distribution{0.0, 1.0};
 
   std::size_t _max_splits;

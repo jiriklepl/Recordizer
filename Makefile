@@ -4,7 +4,7 @@
 #
 
 CXX = g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -Wpedantic -g
+CXXFLAGS := -std=c++20 -Wall -Wextra -Wpedantic -g
 LFLAGS =
 OUTPUT   := output
 SRC      := src
@@ -42,7 +42,7 @@ SOURCES		:= $(wildcard $(patsubst %,%/*.cpp, $(SOURCEDIRS)))
 OBJECTS		:= $(SOURCES:.cpp=.o)
 
 #
-# The following part of the makefile is generic; it can be used to 
+# The following part of the makefile is generic; it can be used to
 # build any executable just by changing the definitions above and by
 # deleting dependencies appended to the file from 'make depend'
 #
@@ -55,7 +55,7 @@ all: $(OUTPUT) $(MAIN)
 $(OUTPUT):
 	$(MD) $(OUTPUT)
 
-$(MAIN): $(OBJECTS) 
+$(MAIN): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -o $(OUTPUTMAIN) $(OBJECTS) $(LFLAGS) $(LIBS)
 
 .cpp.o:

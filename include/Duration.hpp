@@ -1,6 +1,7 @@
 #ifndef DURATION_HPP_
 #define DURATION_HPP_
 
+#include <compare>
 #include <ostream>
 
 class Duration {
@@ -12,22 +13,8 @@ public:
   std::size_t length() const { return _length; }
   void set_length(std::size_t length) { _length = length; }
 
-  bool operator==(const Duration &other) const {
-    return length() == other.length();
-  }
-  bool operator!=(const Duration &other) const { return !(*this == other); }
-  bool operator<(const Duration &other) const {
-    return length() < other.length();
-  }
-  bool operator>(const Duration &other) const {
-    return length() > other.length();
-  }
-  bool operator<=(const Duration &other) const {
-    return length() <= other.length();
-  }
-  bool operator>=(const Duration &other) const {
-    return length() >= other.length();
-  }
+  auto operator<=>(const Duration &other) const = default;
+
   Duration operator+(const Duration &other) const {
     return Duration(length() + other.length());
   }

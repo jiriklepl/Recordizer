@@ -14,13 +14,12 @@ public:
   Note(Duration duration, unsigned char note, unsigned char velocity)
       : Note{duration, note, velocity, velocity} {}
 
-  NoteEvent on_event(Duration when, unsigned char channel) const {
-    return {when, channel, note(), on_velocity(), NoteEvent::EventType::ON};
+  NoteOnEvent on_event(Duration when, unsigned char channel) const {
+    return {when, channel, note(), on_velocity()};
   }
 
-  NoteEvent off_event(Duration when, unsigned char channel) const {
-    return {when + duration(), channel, note(), off_velocity(),
-            NoteEvent::EventType::OFF};
+  NoteOffEvent off_event(Duration when, unsigned char channel) const {
+    return {when + duration(), channel, note(), off_velocity()};
   }
 
   Duration duration() const { return _duration; }
