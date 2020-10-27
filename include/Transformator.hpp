@@ -7,8 +7,7 @@
 
 #include "NoteSheet.hpp"
 
-// TODO: custom copy, move constructors and operators because of using primitive
-// types and then fix clear() so it resets generator
+// TODO: fix clear() so it resets generator
 
 class Transformator {
 public:
@@ -101,7 +100,8 @@ public:
 
   template <std::derived_from<Event> EventType, class... Args>
   bool add_event(Duration when, unsigned char channel, Args... args) {
-    return note_sheet.add_event<EventType>(when, channel, std::forward<Args>(args)...);
+    return note_sheet.add_event<EventType>(when, channel,
+                                           std::forward<Args>(args)...);
   }
 
   void append_note(Duration after, unsigned char channel, Note added) {
@@ -110,7 +110,8 @@ public:
 
   template <std::derived_from<Event> EventType, class... Args>
   bool append_event(Duration when, unsigned char channel, Args... args) {
-    return note_sheet.append_event<EventType>(when, channel, std::forward<Args>(args)...);
+    return note_sheet.append_event<EventType>(when, channel,
+                                              std::forward<Args>(args)...);
   }
 
   void clear() {
@@ -135,7 +136,7 @@ private:
 
   double random() { return distribution()(generator()); }
 
-  generator_type _generator{80};
+  generator_type _generator;
   distribution_type _distribution{0.0, 1.0};
 
   std::size_t _max_splits;
