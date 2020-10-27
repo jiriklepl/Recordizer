@@ -110,26 +110,29 @@ public:
   EventType type() const override { return EventType::NOTE_ON; }
 };
 
-class ProgramChange : public Event {
+class ProgramChangeData {
 public:
-  ProgramChange(Duration when, unsigned char channel, unsigned char pc_num)
-      : Event{when, channel}, _pc_num{pc_num} {}
-
+  ProgramChangeData(unsigned char pc_num) : _pc_num{pc_num} {}
   unsigned char pc_num() const { return _pc_num; }
   void set_pc_num(unsigned char pc_num) { _pc_num = pc_num; }
 
+private:
+  unsigned char _pc_num;
+};
+class ProgramChangeEvent : public Event, public ProgramChangeData {
+public:
+  ProgramChangeEvent(Duration when, unsigned char channel, unsigned char pc_num)
+      : Event{when, channel}, ProgramChangeData{pc_num} {}
+
   EventType type() const override { return EventType::PROGRAM_CHANGE; }
 
-  // the other is guaranteed to be a ProgramChange
+  // the other is guaranteed to be a ProgramChangeEvent
   std::strong_ordering _compare(const Event &other) const override {
-    auto &&cast_other = static_cast<const ProgramChange &>(other);
+    auto &&cast_other = static_cast<const ProgramChangeEvent &>(other);
     return pc_num() <=> cast_other.pc_num();
   }
 
   void _print(std::ostream &stream) const override { stream.put(pc_num()); }
-
-private:
-  unsigned char _pc_num;
 };
 
 #endif // NOTE_EVENT_HPP_
