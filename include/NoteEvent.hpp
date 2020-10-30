@@ -7,7 +7,7 @@
 
 #include "Duration.hpp"
 
-// TODO: add support for unsupported events, aliases for program change
+// TODO: add support for unsupported events, aliases for program change (piano, etc.)
 class Event {
 public:
   enum class EventType : unsigned char {

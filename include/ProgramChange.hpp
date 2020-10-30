@@ -5,7 +5,7 @@
 
 class ProgramChange : public ProgramChangeData {
 public:
-    ProgramChangeEvent get_event(Duration when, unsigned char channel) {
+    ProgramChangeEvent get_event(Duration when, unsigned char channel) const {
         return {when, channel, pc_num()};
     }
 };

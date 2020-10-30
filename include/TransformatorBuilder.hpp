@@ -3,6 +3,7 @@
 
 #include "ProgramChange.hpp"
 #include "Transformator.hpp"
+#include "NoteBundle.hpp"
 
 struct shift_t {
   Duration amount;
@@ -31,7 +32,13 @@ public:
                                               .positive = false}, _channel{channel} {}
 
   TransformatorBuilder &operator<<(Note added) {
-    _transformator.append_note(_shift.amount, _channel, added);
+    if (_shift.positive) {
+      _transformator.append_note(_shift.amount, _channel, added);
+    } else {
+      assert(_transformator.end_time() >= _shift.amount);
+      _transformator.add_note(_transformator.end_time() - _shift.amount, _channel, added);
+    }
+
     _shift.reset();
     return *this;
   }
@@ -43,6 +50,19 @@ public:
 
   TransformatorBuilder &operator<<(ProgramChange pc) {
     _transformator.append_event<ProgramChangeEvent>(_shift.amount, _channel, pc.pc_num());
+    return *this;
+  }
+
+  TransformatorBuilder &operator<<(const NoteBundle& nb) {
+    auto it = nb.begin();
+    if (it != nb.end()) {
+      *this << *it;
+      ++it;
+    }
+    for (; it != nb.end(); ++it) {
+      Note note = *it;
+      *this << shift(note.duration(), false) << note;
+    }
     return *this;
   }
 

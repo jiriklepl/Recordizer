@@ -11,8 +11,6 @@
 #include "Note.hpp"
 #include "NoteEvent.hpp"
 
-// TODO: append note with offset instead of absolute time
-
 struct EventComparator {
   bool operator()(const std::unique_ptr<Event>& left, const std::unique_ptr<Event>& right) const {
     return *left < *right;

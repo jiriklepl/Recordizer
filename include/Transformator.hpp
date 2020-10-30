@@ -115,6 +115,9 @@ public:
                                               std::forward<Args>(args)...);
   }
 
+  bool empty() const { return note_sheet.empty(); }
+  Duration end_time() const { return note_sheet.end_time(); }
+
   void clear() {
     note_sheet.clear();
     set_current_error(0);
