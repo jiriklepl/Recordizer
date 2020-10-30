@@ -7,7 +7,8 @@
 
 #include "Duration.hpp"
 
-// TODO: add support for unsupported events, aliases for program change (piano, etc.)
+// TODO: add support for unsupported events, aliases for program change (piano,
+// etc.)
 class Event {
 public:
   enum class EventType : unsigned char {
@@ -33,7 +34,8 @@ public:
       return cmp;
     else if (auto cmp = channel() <=> other.channel(); cmp != 0)
       return cmp;
-    else if (auto cmp = type() <=> other.type(); cmp != 0)
+    else if (auto cmp = event_priority(type()) <=> event_priority(other.type());
+             cmp != 0)
       return cmp;
     else
       return _compare(other);
@@ -56,6 +58,33 @@ protected:
 private:
   Duration _when;
   unsigned char _channel;
+
+  static constexpr std::size_t event_priority(EventType type) {
+    switch (type) {
+    case EventType::POLY_KEY:
+      return 10;
+      break;
+    case EventType::NOTE_ON:
+      return 9;
+      break;
+    case EventType::NOTE_OFF:
+      return 8;
+      break;
+    case EventType::CONTROL_CHANGE:
+      return 7;
+      break;
+    case EventType::PITCH_WHEEL_CHANGE:
+      return 6;
+      break;
+    case EventType::CHANNEL_PRESSURE:
+      return 5;
+      break;
+    case EventType::PROGRAM_CHANGE:
+      return 4;
+      break;
+    }
+    assert(false);
+  }
 };
 
 class NoteEvent : public Event {
