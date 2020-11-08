@@ -28,6 +28,13 @@ public:
     return Duration(length() / parts);
   }
 
+  Duration& operator+=(const Duration &other) {
+    return *this = *this + other;
+  }
+  Duration& operator-=(const Duration &other) {
+    return *this = *this - other;
+  }
+
   friend std::ostream &operator<<(std::ostream &, const Duration &);
 
 private:
