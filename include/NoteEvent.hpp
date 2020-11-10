@@ -139,6 +139,15 @@ public:
   EventType type() const override { return EventType::NOTE_ON; }
 };
 
+class PolyKeyEvent : public NoteEvent {
+public:
+  PolyKeyEvent(Duration when, unsigned char channel, unsigned char note,
+              unsigned char velocity)
+      : NoteEvent{when, channel, note, velocity} {}
+
+  EventType type() const override { return EventType::POLY_KEY; }
+};
+
 class ProgramChangeData {
 public:
   ProgramChangeData(unsigned char pc_num) : _pc_num{pc_num} {}
