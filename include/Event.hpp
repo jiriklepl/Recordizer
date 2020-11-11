@@ -1,5 +1,5 @@
-#ifndef NOTE_EVENT_HPP_
-#define NOTE_EVENT_HPP_
+#ifndef EVENT_HPP_
+#define EVENT_HPP_
 
 #include <cassert>
 #include <compare>
@@ -24,15 +24,10 @@ public:
   Duration when() const { return _when; }
   void set_when(Duration when) { _when = when; }
 
-  unsigned char channel() const { return _channel; }
-  void set_channel(unsigned char channel) { _channel = channel; }
-
   virtual EventType type() const = 0;
 
   std::strong_ordering operator<=>(const Event &other) const {
     if (auto cmp = when() <=> other.when(); cmp != 0)
-      return cmp;
-    else if (auto cmp = channel() <=> other.channel(); cmp != 0)
       return cmp;
     else if (auto cmp = event_priority(type()) <=> event_priority(other.type());
              cmp != 0)
@@ -42,22 +37,19 @@ public:
   }
 
   friend std::ostream &operator<<(std::ostream &stream, const Event &event) {
-    stream.put(128 | ((unsigned char)event.type() << 4) | event.channel());
     event._print(stream);
 
     return stream;
   }
 
 protected:
-  Event(Duration when, unsigned char channel)
-      : _when(when), _channel(channel) {}
+  Event(Duration when) : _when(when) {}
 
-  virtual void _print(std::ostream &) const = 0;
   virtual std::strong_ordering _compare(const Event &) const = 0;
+  virtual void _print(std::ostream &stream) const = 0;
 
 private:
   Duration _when;
-  unsigned char _channel;
 
   static constexpr std::size_t event_priority(EventType type) {
     switch (type) {
@@ -87,7 +79,41 @@ private:
   }
 };
 
-class NoteEvent : public Event {
+class VoiceMessageEvent : public Event {
+public:
+
+  unsigned char channel() const { return _channel; }
+  void set_channel(unsigned char channel) { _channel = channel; }
+
+protected:
+  std::strong_ordering _compare(const Event &other) const final {
+#ifdef NDEBUG
+    auto &&cast_other = static_cast<const VoiceMessageEvent &>(other);
+#else
+    auto &&cast_other = dynamic_cast<const VoiceMessageEvent &>(other);
+#endif
+    if (auto cmp = channel() <=> cast_other.channel(); cmp != 0)
+      return cmp;
+    else
+      return _compare_voice(cast_other);
+  }
+
+protected:
+  VoiceMessageEvent(Duration when, unsigned char channel) : Event{when}, _channel(channel) {}
+
+  void _print(std::ostream &stream) const final {
+    stream.put(128 | ((unsigned char)type() << 4) | channel());
+    _print_voice(stream);
+  }
+
+  virtual std::strong_ordering _compare_voice(const VoiceMessageEvent &other) const = 0;
+  virtual void _print_voice(std::ostream &stream) const = 0;
+
+private:
+  unsigned char _channel;
+};
+
+class NoteEvent : public VoiceMessageEvent {
 public:
   unsigned char note() const { return _note; }
   void set_note(unsigned char note) { _note = note; }
@@ -95,9 +121,13 @@ public:
   unsigned char velocity() const { return _velocity; }
   void set_velocity(unsigned char velocity) { _velocity = velocity; }
 
-  // other is guaranteed to be a NoteEvent
-  std::strong_ordering _compare(const Event &other) const override {
+  // other should be a NoteEvent
+  std::strong_ordering _compare_voice(const VoiceMessageEvent &other) const override {
+#ifdef NDEBUG
     auto &&cast_other = static_cast<const NoteEvent &>(other);
+#else
+    auto &&cast_other = dynamic_cast<const NoteEvent &>(other);
+#endif
     if (auto cmp = note() <=> cast_other.note(); cmp != 0)
       return cmp;
     else {
@@ -106,7 +136,7 @@ public:
     }
   }
 
-  void _print(std::ostream &stream) const override {
+  void _print_voice(std::ostream &stream) const override {
     stream.put(note());
     stream.put(velocity());
   }
@@ -114,7 +144,7 @@ public:
 protected:
   NoteEvent(Duration when, unsigned char channel, unsigned char note,
             unsigned char velocity)
-      : Event{when, channel}, _note{note}, _velocity{velocity} {}
+      : VoiceMessageEvent{when, channel}, _note{note}, _velocity{velocity} {}
 
 private:
   unsigned char _note;
@@ -142,7 +172,7 @@ public:
 class PolyKeyEvent : public NoteEvent {
 public:
   PolyKeyEvent(Duration when, unsigned char channel, unsigned char note,
-              unsigned char velocity)
+               unsigned char velocity)
       : NoteEvent{when, channel, note, velocity} {}
 
   EventType type() const override { return EventType::POLY_KEY; }
@@ -157,20 +187,26 @@ public:
 private:
   unsigned char _pc_num;
 };
-class ProgramChangeEvent : public Event, public ProgramChangeData {
+class ProgramChangeEvent : public VoiceMessageEvent, public ProgramChangeData {
 public:
   ProgramChangeEvent(Duration when, unsigned char channel, unsigned char pc_num)
-      : Event{when, channel}, ProgramChangeData{pc_num} {}
+      : VoiceMessageEvent{when, channel}, ProgramChangeData{pc_num} {}
 
   EventType type() const override { return EventType::PROGRAM_CHANGE; }
 
-  // the other is guaranteed to be a ProgramChangeEvent
-  std::strong_ordering _compare(const Event &other) const override {
+  // the other should be a ProgramChangeEvent
+  std::strong_ordering _compare_voice(const VoiceMessageEvent &other) const override {
+#ifdef NDEBUG
     auto &&cast_other = static_cast<const ProgramChangeEvent &>(other);
+#else
+    auto &&cast_other = dynamic_cast<const ProgramChangeEvent &>(other);
+#endif
     return pc_num() <=> cast_other.pc_num();
   }
 
-  void _print(std::ostream &stream) const override { stream.put(pc_num()); }
+  void _print_voice(std::ostream &stream) const override { stream.put(pc_num()); }
 };
 
-#endif // NOTE_EVENT_HPP_
+class MetaEvent : public Event { /* TODO: implement MetaEvents */ };
+
+#endif // EVENT_HPP_
