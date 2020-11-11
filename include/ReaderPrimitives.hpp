@@ -47,11 +47,11 @@ template <> inline std::unique_ptr<Event> read(std::istream &stream) {
   else
     return nullptr;
 
-  // couldn't receive the very first byte
+  // can receive the very first byte?
   if (!stream.get(reinterpret_cast<char &>(c)))
     return nullptr;
 
-  // The first byte doesn't have the most significant bit set
+  // Is the most significant bit set (as expected in every Event)?
   if (!(c & 1U << 7))
     return nullptr;
 
