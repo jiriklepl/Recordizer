@@ -12,13 +12,14 @@
 class Event {
 public:
   enum class EventType : unsigned char {
-    NOTE_OFF = 0B0U,
-    NOTE_ON = 0B1U,
-    /*NOT SUPPORTED*/ POLY_KEY = 0B10U,
-    /*NOT SUPPORTED*/ CONTROL_CHANGE = 0B11U,
-    PROGRAM_CHANGE = 0B100U,
-    /*NOT SUPPORTED*/ CHANNEL_PRESSURE = 0B101U,
-    /*NOT SUPPORTED*/ PITCH_WHEEL_CHANGE = 0B110U,
+    NOTE_OFF =                             0B1000U,
+    NOTE_ON =                              0B1001U,
+    /*NOT SUPPORTED*/ POLY_KEY =           0B1010U,
+    /*NOT SUPPORTED*/ CONTROL_CHANGE =     0B1011U,
+    PROGRAM_CHANGE =                       0B1100U,
+    /*NOT SUPPORTED*/ CHANNEL_PRESSURE =   0B1101U,
+    /*NOT SUPPORTED*/ PITCH_WHEEL_CHANGE = 0B1110U,
+    /*NOT SUPPORTED*/ META_EVENT =         0B1111U,
   };
 
   Duration when() const { return _when; }
@@ -102,7 +103,7 @@ protected:
   VoiceMessageEvent(Duration when, unsigned char channel) : Event{when}, _channel(channel) {}
 
   void _print(std::ostream &stream) const final {
-    stream.put(128 | ((unsigned char)type() << 4) | channel());
+    stream.put((unsigned char)type() << 4 | channel());
     _print_voice(stream);
   }
 

@@ -3,26 +3,29 @@
 
 #include "TransformatorBuilder.hpp"
 #include "NoteConstants.hpp"
+#include "NoteBundle.hpp"
 
 int main(int argc, char *argv[]) {
   std::ofstream soubor{"soubor.mid", std::ios::binary};
   Transformator trans{};
   TransformatorBuilder builder{trans, 0};
-
+  NoteBundle notes{100, 100, C + 4, E + 4, G + 4};
   builder << ProgramChange{75}
-          << shift(100)
-          << Note{200, A + 4, 100}
-          << Note{50, H + 4, 100}
-          << Note{50, A + 4, 100}
-
-          << Note{100, E + 4, 100}
-          << Note{200, G + 4, 100}
-          << Note{50, F + 4, 100}
-          << Note{50, E + 4, 100}
-
-          << Note{300, D + 4, 100}
-          << Note{50, D + 4, 100}
-          << Note{50, D + 4, 100};
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes
+          << notes;
 
   soubor << "MThd";
   soubor.put(0);

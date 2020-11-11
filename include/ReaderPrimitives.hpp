@@ -59,7 +59,7 @@ template <> inline std::unique_ptr<Event> read(std::istream &stream) {
 
   // most of the events have only two bytes of data:
   char data[2];
-  switch ((EventType)(c >> 4 & 0x7)) {
+  switch ((EventType)c) {
   case EventType::NOTE_OFF:
     if (stream.get(data[0]) && stream.get(data[1]))
       return std::make_unique<NoteOffEvent>(when, channel, data[0], data[1]);
