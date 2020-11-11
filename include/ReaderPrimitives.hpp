@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "Duration.hpp"
-#include "NoteEvent.hpp"
+#include "Event.hpp"
 
 /**
  * @brief reads a value of type T from the input stream
@@ -35,6 +35,8 @@ inline std::unique_ptr<Duration> read<Duration>(std::istream &stream) {
   return nullptr;
 }
 
+
+// the returned time (regardles of the actual Event subtype) is actually the delta time
 template <> inline std::unique_ptr<Event> read(std::istream &stream) {
   using EventType = Event::EventType;
   unsigned char c;

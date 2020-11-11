@@ -1,7 +1,7 @@
 #ifndef PROGRAM_CHANGE_HPP_
 #define PROGRAM_CHANGE_HPP_
 
-#include "NoteEvent.hpp"
+#include "Event.hpp"
 
 class ProgramChange : public ProgramChangeData {
 public:

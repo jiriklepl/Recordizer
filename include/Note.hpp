@@ -2,7 +2,7 @@
 #define NOTE_HPP_
 
 #include "Duration.hpp"
-#include "NoteEvent.hpp"
+#include "Event.hpp"
 
 class Note {
 public:

@@ -9,7 +9,7 @@
 #include <utility>
 
 #include "Note.hpp"
-#include "NoteEvent.hpp"
+#include "Event.hpp"
 
 struct EventComparator {
   bool operator()(const std::unique_ptr<Event>& left, const std::unique_ptr<Event>& right) const {
